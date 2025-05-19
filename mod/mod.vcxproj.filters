@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{89589722-c6f9-401e-9e44-cfb24fa7c7b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\INIReader">
+      <UniqueIdentifier>{0b056004-dd35-47f2-82bb-35a3008da799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\MinHook">
+      <UniqueIdentifier>{d430c9c5-e96a-4b6a-9401-55a6a16b0cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AutoEquip">
+      <UniqueIdentifier>{10c3f378-519b-4e03-a9c3-d4d94068a19c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ItemRequirements">
+      <UniqueIdentifier>{30457d6d-ae02-47c7-8bc3-4b8b06e4ce1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helpers">
+      <UniqueIdentifier>{09f13648-d76b-4b99-89c8-467040f23dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ItemsFiltering">
+      <UniqueIdentifier>{a66c2a1d-8bc7-4afe-a2f6-006f9d2e0610}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\src\buffer.c">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\src\hook.c">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\src\trampoline.c">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\src\HDE\hde32.c">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="MinHook\src\HDE\hde64.c">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="AutoEquip.cpp">
+      <Filter>Source Files\AutoEquip</Filter>
+    </ClCompile>
+    <ClCompile Include="ParamHelpers.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="DllMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemRequirements.cpp">
+      <Filter>Source Files\ItemRequirements</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemAcqHooks.cpp">
+      <Filter>Source Files\ItemsFiltering</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponsReforger.cpp">
+      <Filter>Source Files\ItemsFiltering</Filter>
+    </ClCompile>
+    <ClCompile Include="INIReader\ini.cpp">
+      <Filter>Resource Files\INIReader</Filter>
+    </ClCompile>
+    <ClCompile Include="INIReader\INIReader.cpp">
+      <Filter>Resource Files\INIReader</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\src\buffer.h">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\src\trampoline.h">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\src\HDE\hde32.h">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\src\HDE\hde64.h">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\src\HDE\pstdint.h">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\src\HDE\table32.h">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="MinHook\src\HDE\table64.h">
+      <Filter>Resource Files\MinHook</Filter>
+    </ClInclude>
+    <ClInclude Include="ParamHelpers.h">
+      <Filter>Source Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemAcqHooks.h">
+      <Filter>Source Files\ItemsFiltering</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponsReforger.h">
+      <Filter>Source Files\ItemsFiltering</Filter>
+    </ClInclude>
+    <ClInclude Include="AutoEquip.h">
+      <Filter>Source Files\AutoEquip</Filter>
+    </ClInclude>
+    <ClInclude Include="Addresses.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemStructs.h">
+      <Filter>Source Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="INIReader\ini.h">
+      <Filter>Resource Files\INIReader</Filter>
+    </ClInclude>
+    <ClInclude Include="INIReader\INIReader.h">
+      <Filter>Resource Files\INIReader</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\AutoEquipSettings.ini">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+</Project>
