@@ -14,12 +14,17 @@ public:
     static EquipParamProtector * GetEquipParamProtector(int itemId);
     static EquipParamAccessory * GetEquipParamAccessory(int itemId);
     static EquipParamGoods * GetEquipParamGoods(int itemId);
-    static unsigned long  WeaponGetUpgrade(int itemId);
+    static unsigned char GetWeaponCategory(int itemId);
+    static unsigned long  GetWeaponUpgrade(int itemId);
+
+    static bool IsRing(int itemId);
     static bool IsWeaponFullyUpgradable(int itemId);
     static bool IsWeaponInfusable(int itemId);
-    static bool IsCatalyst(int itemId);
-    static bool IsRing(int itemId);
-    static bool IsShield(int itemId);
+
+    // for weapon categories
+    static bool IsCatalyst(unsigned char wepCategory);
+    static bool IsRanged(unsigned char wepCategory);
+    static bool IsShield(unsigned char wepCategory);
 
 private:
     static inline const ParamFunc GetEquipParamWeaponInternal{ (ParamFunc)0x0 };

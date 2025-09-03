@@ -2,6 +2,7 @@
 #include "Hooks.h"
 #include "Addresses.h"
 #include "ItemAcqHooks.h"
+#include "ItemRequirements.h"
 #include <iostream>
 
 DWORD NoWeaponRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr);
@@ -20,6 +21,8 @@ DWORD ModCore::Start()
 	return 0;
 };
 
+
+
 bool ModCore::Initialize()
 {
 	Addresses::Rebase();
@@ -32,10 +35,11 @@ bool ModCore::Initialize()
 	DebugPrint("[AutoEquip] - AutoEquipArmor = %i", Settings::AutoEquipArmor);
 	DebugPrint("[AutoEquip] - AutoEquipRings = %i", Settings::AutoEquipRings);
 	DebugPrint("[AutoEquip] - LeftHandedCatalysts = %i", Settings::LeftHandedCatalysts);
+	DebugPrint("[AutoEquip] - LeftHandedRanged = %i", Settings::LeftHandedRanged);
 	DebugPrint("[Randomizer] - RandomizeWeaponUpgrade = %i", Settings::RandomWeaponUpgrades);
 	DebugPrint("[Randomizer] - RandomInfusionChance = %i", Settings::RandomInfusionChance);
 	DebugPrint("[Randomizer] - ReinforceShopWeapons = %i", Settings::ReinforceShopWeapons);
-	DebugPrint("[Randomizer] - HighUpgrades = %i", Settings::MoreUpgradedWeapons);
+	DebugPrint("[Randomizer] - AdjustUpgrades = %i", Settings::AdjustUpgrades);
 	DebugPrint("[Misc] - LessWeaponRequirements = %i", Settings::LessWeaponRequirements);
 #endif
 
@@ -49,6 +53,7 @@ bool ModCore::Initialize()
 		ret &= Hooks::SetHook(Addresses::GetGetAgiRequirements(), &AgiRequirements);
 		ret &= Hooks::SetHook(Addresses::GetGetIntRequirements(), &IntRequirements);
 		ret &= Hooks::SetHook(Addresses::GetGetFthRequirements(), &FthRequirements);
+		ret &= Hooks::SetHook(Addresses::GetCalcWeaponDamage(), &CalcWeaponDamage, &CalcWeaponDamage_org);
 	}
 
 	return ret;
@@ -115,6 +120,7 @@ bool Settings::LoadSettings(const std::string& filename)
 	AutoEquipArmor = reader.GetBoolean("AutoEquip", "AutoEquipArmor", true);
 	AutoEquipRings = reader.GetBoolean("AutoEquip", "AutoEquipRings", true);
 	LeftHandedCatalysts = reader.GetBoolean("AutoEquip", "LeftHandedCatalysts", true);
+	LeftHandedRanged = reader.GetBoolean("AutoEquip", "LeftHandedRanged", true);
 
 	RandomWeaponUpgrades = reader.GetBoolean("Randomizer", "RandomizeWeaponUpgrade", false);
 	RandomInfusionChance = reader.GetInteger("Randomizer", "RandomInfusionChance", 0);
@@ -123,7 +129,7 @@ bool Settings::LoadSettings(const std::string& filename)
 	RandomInfusionChance = RandomInfusionChance > 100 ? 100 : RandomInfusionChance;
 
 	ReinforceShopWeapons = reader.GetBoolean("Randomizer", "ReinforceShopWeapons", false);
-	MoreUpgradedWeapons = reader.GetBoolean("Randomizer", "HighUpgrades", false);
+	AdjustUpgrades = static_cast<UpgradeAdjustment>(reader.GetInteger("Randomizer", "AdjustUpgrades", 0));
 
 	LessWeaponRequirements = static_cast<WeaponRequirements>(reader.GetInteger("Misc", "LessWeaponRequirements", 0));
 	return true;

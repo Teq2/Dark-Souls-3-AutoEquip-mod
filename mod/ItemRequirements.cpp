@@ -3,6 +3,10 @@
 #include <basetsd.h>
 #include <IntSafe.h>
 
+float CalcWeaponDamage(DWORD, std::uint32_t, float, std::uint64_t, std::uint64_t, std::uint64_t, float, BYTE);
+
+decltype(&CalcWeaponDamage) CalcWeaponDamage_org = 0;
+
 DWORD NoWeaponRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr)
 {
 	auto params = *(UINT_PTR*)(itemPtr + 8);
@@ -24,6 +28,12 @@ static DWORD FilterRequirements(DWORD prev)
 	default:
 		return prev;
 	}
+}
+
+float CalcWeaponDamage(DWORD weaponReq, std::uint32_t playerStat, float param_3, std::uint64_t param_4,
+	std::uint64_t param_5, std::uint64_t param_6, float param_7, BYTE param_8)
+{
+	return CalcWeaponDamage_org(FilterRequirements(weaponReq), playerStat, param_3, param_4, param_5, param_6, param_7, param_8);
 }
 
 DWORD StrRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr)

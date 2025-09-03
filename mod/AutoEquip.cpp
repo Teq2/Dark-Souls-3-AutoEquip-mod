@@ -51,15 +51,21 @@ bool AutoEquip::ChooseInventorySlot(int itemID, EquipBuffer* equipData)
 		}
 		if (Settings::AutoEquipWeapons)
 		{
-			auto normalizedID = itemID - ParamHelpers::WeaponGetUpgrade(itemID);
+			auto normalizedID = itemID - ParamHelpers::GetWeaponUpgrade(itemID);
+			auto wepCat = ParamHelpers::GetWeaponCategory(normalizedID);
 
-			if (ParamHelpers::IsShield(normalizedID))
+			if (ParamHelpers::IsShield(wepCat))
 			{
 				equipSlot = 0;
 			}
-			else if (Settings::LeftHandedCatalysts && ParamHelpers::IsCatalyst(normalizedID))
+			else if (Settings::LeftHandedCatalysts && ParamHelpers::IsCatalyst(wepCat))
 			{
 				// Equip staves, chimes, talismans in the left hand (0)
+				equipSlot = 0;
+			}
+			else if (Settings::LeftHandedRanged && ParamHelpers::IsRanged(wepCat))
+			{
+				// Equip bows and crossbows in the left hand (0)
 				equipSlot = 0;
 			}
 			else

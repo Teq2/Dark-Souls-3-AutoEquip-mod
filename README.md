@@ -10,7 +10,7 @@ This modification allows you to automatically equip items you get in-game and up
 
 ### Details
 - Only newly obtained weapons are affected
-- Weapons are equipped in the right hand, shields in the left, magic type weapons (catalysts) may be equipped in the right or left hand depending on the settings
+- Weapons are equipped in the right hand, shields in the left, ranged weapons or magic catalysts may be equipped in the right or left hand depending on the settings
 - Shop weapons can also be optionally reinforced after buying
 - To increase maximum upgrade level you have to manually reinforce a weapon at blacksmith, you won't receive an upgraded weapon if your maximum is 0 (this is an in-game thing for pvp matchmarking). Special weapons can be upgraded up to 5, reguars up to 10.
 - Rings are shifted to the right on equipping, new ring always placed in the leftmost slot

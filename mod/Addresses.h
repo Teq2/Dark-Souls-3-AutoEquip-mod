@@ -49,6 +49,11 @@ public:
 		return findEquippedSlotAddr + baseDelta;
 	}
 
+	static UINT_PTR GetCalcWeaponDamage()
+	{
+		return 0x1406420c0 + baseDelta;
+	}
+
 	static UINT_PTR GetGetStrRequirements()
 	{
 		return getStrRequirementsAddr + baseDelta;

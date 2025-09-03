@@ -11,6 +11,9 @@
 #define int3 ;
 #endif
 
+enum class UpgradeAdjustment { None, Higher, Max };
+enum class WeaponRequirements { Full, Halved, NoReq } ;
+
 class ModCore {
 public:
 	static DWORD Start();
@@ -20,8 +23,6 @@ public:
 	static void DebugInit();
 	static void DebugPrint(const char* message, ...);
 };
-
-typedef enum { Full, Halved, NoReq } WeaponRequirements;
 
 class Settings
 {
@@ -33,10 +34,11 @@ public:
 	static inline bool AutoEquipArmor;
 	static inline bool AutoEquipRings;
 	static inline bool LeftHandedCatalysts;
+	static inline bool LeftHandedRanged;
 	static inline WeaponRequirements LessWeaponRequirements;
 
 	static inline bool RandomWeaponUpgrades;
 	static inline int RandomInfusionChance;
 	static inline bool ReinforceShopWeapons;
-	static inline bool MoreUpgradedWeapons;
+	static inline UpgradeAdjustment AdjustUpgrades;
 };

@@ -107,6 +107,7 @@
     <ClInclude Include="AutoEquip.h" />
     <ClInclude Include="INIReader\ini.h" />
     <ClInclude Include="INIReader\INIReader.h" />
+    <ClInclude Include="ItemRequirements.h" />
     <ClInclude Include="ItemStructs.h" />
     <ClInclude Include="ParamHelpers.h" />
     <ClInclude Include="Core.h" />

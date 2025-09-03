@@ -127,6 +127,9 @@
     <ClInclude Include="INIReader\INIReader.h">
       <Filter>Resource Files\INIReader</Filter>
     </ClInclude>
+    <ClInclude Include="ItemRequirements.h">
+      <Filter>Source Files\ItemRequirements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\AutoEquipSettings.ini">

@@ -3,7 +3,8 @@
 
 struct EquipParamWeapon;
 
-EquipParamWeapon* ParamHelpers::GetEquipParamWeapon(int itemId) {
+EquipParamWeapon* ParamHelpers::GetEquipParamWeapon(int itemId)
+{
     //char result[44];
     //GetEquipParamWeaponInternal(result, itemId);
     //return (EquipParamWeapon*)*(long long*)(result + 8);
@@ -25,29 +26,25 @@ EquipParamGoods* ParamHelpers::GetEquipParamGoods(int itemId)
     return (EquipParamGoods*)ReversedGetParams(itemId, EquipParamGoodsTable);
 }
 
-
-bool ParamHelpers::IsCatalyst(int itemId) {
-
+unsigned char ParamHelpers::GetWeaponCategory(int itemId)
+{
     EquipParamWeapon* params = GetEquipParamWeapon(itemId & 0xFFFFFFF0);
 
     if (params)
     {
-        return params->weaponCategory == 8;
-
-        //switch (params->displayTypeId)
-        //{
-        //case 57: // staff
-        //case 63: // chime
-        //case 61: // talisman
-        //case 59: // flame
-        //    return true;
-        //}
+        return params->weaponCategory;
     }
-    return false;
+    return -1;
 }
 
-bool ParamHelpers::IsRing(int itemId) {
+unsigned long ParamHelpers::GetWeaponUpgrade(int itemId)
+{
+    // Every infusion gives a step of 100, everything in between - upgrade level
+    return itemId % 100;
+}
 
+bool ParamHelpers::IsRing(int itemId)
+{
     EquipParamAccessory* params = GetEquipParamAccessory(itemId & 0x0FFFFFFF);
 
     if (params)
@@ -57,24 +54,8 @@ bool ParamHelpers::IsRing(int itemId) {
     return false;
 }
 
-bool ParamHelpers::IsShield(int itemId) {
-
-    EquipParamWeapon* params = GetEquipParamWeapon(itemId & 0x0FFFFFFF);
-
-    if (params)
-    {
-        return params->weaponCategory == 12;
-    }
-    return false;
-}
-
-unsigned long ParamHelpers::WeaponGetUpgrade(int itemId) {
-    // Every infusion gives a step of 100, everything in between - upgrade level
-    return itemId % 100;
-}
-
-bool ParamHelpers::IsWeaponFullyUpgradable(int itemId) {
-    
+bool ParamHelpers::IsWeaponFullyUpgradable(int itemId)
+{
     EquipParamWeapon* params = GetEquipParamWeapon(itemId);
 
     if (params)
@@ -84,8 +65,8 @@ bool ParamHelpers::IsWeaponFullyUpgradable(int itemId) {
     return false;
 }
 
-bool ParamHelpers::IsWeaponInfusable(int itemId) {
-
+bool ParamHelpers::IsWeaponInfusable(int itemId)
+{
     const int infusionId = 1500;
     EquipParamWeapon* params = GetEquipParamWeapon(itemId + infusionId);
 
@@ -99,6 +80,21 @@ bool ParamHelpers::IsWeaponInfusable(int itemId) {
         return true;
     }
     return false;
+}
+
+bool ParamHelpers::IsCatalyst(unsigned char wepCategory)
+{
+    return wepCategory == 8;
+}
+
+bool ParamHelpers::IsRanged(unsigned char wepCategory)
+{
+    return wepCategory == 10 /* a bow */ || wepCategory == 11 /* a crossbow */;
+}
+
+bool ParamHelpers::IsShield(unsigned char wepCategory)
+{
+    return wepCategory == 12;
 }
 
 /// reversed this function just for better understanding GetParamX funcs

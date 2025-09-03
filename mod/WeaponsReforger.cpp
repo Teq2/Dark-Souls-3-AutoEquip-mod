@@ -21,7 +21,7 @@ int WeaponReforger::Reforge(int itemID)
 			playerState = *(UINT_PTR*)(playerState + 0x10);
 			BYTE playerUpgradeLevel = *(BYTE*)(playerState + 0xB3);
 			
-			auto preupgrade = ParamHelpers::WeaponGetUpgrade(itemID);
+			auto preupgrade = ParamHelpers::GetWeaponUpgrade(itemID);
 			auto infusable = ParamHelpers::IsWeaponInfusable(itemID - preupgrade);
 			auto regular = ParamHelpers::IsWeaponFullyUpgradable(itemID - preupgrade);
 			auto minUpgrade = preupgrade;
@@ -29,13 +29,17 @@ int WeaponReforger::Reforge(int itemID)
 
 			if (Settings::RandomWeaponUpgrades && maxUpgrade > preupgrade)
 			{
-				if (Settings::MoreUpgradedWeapons)
+				if (Settings::AdjustUpgrades == UpgradeAdjustment::Higher)
 				{
 					decltype(minUpgrade) newBottom = maxUpgrade / 2 + (maxUpgrade & 1);
 					if (minUpgrade < newBottom)
 					{
 						minUpgrade = newBottom;
 					}
+				}
+				else if (Settings::AdjustUpgrades == UpgradeAdjustment::Max)
+				{
+					minUpgrade = maxUpgrade;
 				}
 
 				itemID += RandomizeNumber<DWORD>(minUpgrade, maxUpgrade) - preupgrade;
