@@ -28,7 +28,7 @@ EquipParamGoods* ParamHelpers::GetEquipParamGoods(int itemId)
 
 unsigned char ParamHelpers::GetWeaponCategory(int itemId)
 {
-    EquipParamWeapon* params = GetEquipParamWeapon(itemId & 0xFFFFFFF0);
+    EquipParamWeapon* params = GetEquipParamWeapon(itemId & 0x0FFFFFFF);
 
     if (params)
     {
