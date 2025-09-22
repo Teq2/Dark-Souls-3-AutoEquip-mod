@@ -1,73 +1,51 @@
 #include "ParamHelpers.h"
 #include "Core.h"
-#include <basetsd.h>
-#include <IntSafe.h>
+#include "ItemRequirements.h"
+#include <set>
 
-float CalcWeaponDamage(DWORD, std::uint32_t, float, std::uint64_t, std::uint64_t, std::uint64_t, float, BYTE);
+decltype(&GetMagicParams) GetMagicParams_org = 0;
+decltype(&GetWeaponParams) GetWeaponParams_org = 0;
 
-decltype(&CalcWeaponDamage) CalcWeaponDamage_org = 0;
-
-DWORD NoWeaponRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr)
+template <class ParamsStruct, auto ParamsStruct::* ...  fld>
+void ParamsProc(StatRequirements mode, UINT_PTR* buff, std::uint32_t id)
 {
-	auto params = *(UINT_PTR*)(itemPtr + 8);
-	if (params) {
-		// 4bytes: str, agi, int, faith
-		*(DWORD*)(params + 0xee) = 0;
-	}
-	return 0;
-};
-
-static DWORD FilterRequirements(DWORD prev)
-{
-	switch (Settings::LessWeaponRequirements)
+	static std::set<std::uint32_t> idsAffected{};
+	if (static_cast<std::uint32_t>(buff[0]) == id && buff[1])
 	{
-	case WeaponRequirements::Halved:
-		return prev >> 1;
-	case WeaponRequirements::NoReq:
-		return 0;
-	default:
-		return prev;
+		ParamsStruct* params = reinterpret_cast<ParamsStruct*>(buff[1]);
+
+		switch (mode)
+		{
+		case StatRequirements::Halved:
+			if (!idsAffected.count(id))
+			{
+				idsAffected.insert(id);
+				((params->*fld = params->*fld >> 1), ...);
+			}
+			return;
+		case StatRequirements::NoReq:
+			((params->*fld) = ... = 0);
+			return;
+		}
 	}
 }
 
-float CalcWeaponDamage(DWORD weaponReq, std::uint32_t playerStat, float param_3, std::uint64_t param_4,
-	std::uint64_t param_5, std::uint64_t param_6, float param_7, BYTE param_8)
+void GetWeaponParams(UINT_PTR* buff, std::uint32_t weaponId)
 {
-	return CalcWeaponDamage_org(FilterRequirements(weaponReq), playerStat, param_3, param_4, param_5, param_6, param_7, param_8);
+	GetWeaponParams_org(buff, weaponId);
+	ParamsProc<EquipParamWeapon, 
+		&EquipParamWeapon::properStrength, 
+		&EquipParamWeapon::properAgility, 
+		&EquipParamWeapon::properMagic, 
+		&EquipParamWeapon::properFaith
+	>(Settings::WeaponRequirements, buff, weaponId);
 }
 
-DWORD StrRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr)
+void GetMagicParams(UINT_PTR* buff, std::uint32_t spellId)
 {
-	auto params = *(EquipParamWeapon**)(itemPtr + 8);
-	if (params) {
-		return FilterRequirements(params->properStrength);
-	}
-	return 0;
-};
-
-DWORD AgiRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr)
-{
-	auto params = *(EquipParamWeapon**)(itemPtr + 8);
-	if (params) {
-		return FilterRequirements(params->properAgility);
-	}
-	return 0;
-};
-
-DWORD IntRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr)
-{
-	auto params = *(EquipParamWeapon**)(itemPtr + 8);
-	if (params) {
-		return FilterRequirements(params->properMagic);
-	}
-	return 0;
-};
-
-DWORD FthRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr)
-{
-	auto params = *(EquipParamWeapon**)(itemPtr + 8);
-	if (params) {
-		return FilterRequirements(params->properFaith);
-	}
-	return 0;
-};
+	GetMagicParams_org(buff, spellId);
+	ParamsProc<MagicParams,
+		&MagicParams::requirementIntellect,
+		&MagicParams::requirementFaith
+	>(Settings::MagicRequirements, buff, spellId);
+}

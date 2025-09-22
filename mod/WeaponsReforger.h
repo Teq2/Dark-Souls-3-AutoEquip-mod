@@ -5,7 +5,7 @@
 class WeaponReforger {
 public:
 	static void Reforge(UINT_PTR qWorldChrMan, UINT_PTR pItemBuffer, UINT_PTR pItemData);
-	static int WeaponReforger::Reforge(int itemID);
+	static int Reforge(int itemID);
 private:
 	template <typename T>
 	static T RandomizeNumber(T dMin, T dMax);

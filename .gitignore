@@ -1,6 +1,7 @@
 .vs/
 x64/
 tools/
+drafts/
 *.tlog
 *.ipch
 *.db

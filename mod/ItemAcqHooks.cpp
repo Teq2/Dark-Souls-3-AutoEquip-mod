@@ -10,7 +10,8 @@ size_t ItemPickupHook(UINT_PTR pWorldChrMan, UINT_PTR pItemBuffer, UINT_PTR pIte
 {
 	auto itemsAmount = *(int*)pItemBuffer;
 	ModCore::DebugPrint("[ItemPickupHook] - items:%d", itemsAmount);
-	if (itemsAmount > 99) {
+	if (itemsAmount > 99)
+	{
 		ModCore::DebugPrint("Too many items, skip");
 		return ItemPickupHookOrig(pWorldChrMan, pItemBuffer, pItemData);
 	};

@@ -11,8 +11,10 @@ void AutoEquip::AutoEquipItem(int itemId)
 {
 	EquipBuffer equipBuffer = {};
 
-	if (ChooseInventorySlot(itemId, &equipBuffer)) {
-		if (!IsInventoryItemEquipped(equipBuffer.dInventorySlot)) {
+	if (ChooseInventorySlot(itemId, &equipBuffer))
+	{
+		if (!IsInventoryItemEquipped(equipBuffer.dInventorySlot))
+		{
 			if (equipBuffer.dEquipSlot == 0x11) ShiftRingsRight();
 
 			LockUnlockEquipSlots(1);
@@ -43,7 +45,8 @@ bool AutoEquip::ChooseInventorySlot(int itemID, EquipBuffer* equipData)
 	int equipSlot = -1;
 	auto itemType = (ItemType)(itemID >> 0x1C);
 
-    switch (itemType) {
+    switch (itemType)
+	{
     case(Weapon):
 		if ((itemID >> 0x10) == 6) // ammo
 		{
@@ -99,7 +102,8 @@ bool AutoEquip::ChooseInventorySlot(int itemID, EquipBuffer* equipData)
 		equipData->dEquipSlot = equipSlot;
 		equipData->dInventorySlot = GetInventorySlotID(itemID);
 
-		if (equipData->dInventorySlot == (-1)) {
+		if (equipData->dInventorySlot == (-1))
+		{
 			ModCore::DebugPrint("[AutoEquip] Unable to find the item: %08X", itemID);
 			equip = false;
 		};

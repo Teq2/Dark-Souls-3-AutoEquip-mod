@@ -18,7 +18,7 @@ extern "C" __declspec(dllexport) DWORD WINAPI D3DPERF_GetStatus(void)
 
 				if (!hinstDLL)
 				{
-					MessageBoxA(NULL, "Failed to load original DLL (d3d9.dll)", "Critical Error", MB_ICONERROR);
+					MessageBoxA(NULL, "Failed to load original DLL (d3d9.dll)", "[AutoEquip - Fatal Error]", MB_ICONERROR);
 					ExitProcess(0);
 				};
 				orgD3DPERF_GetStatus = (fnType)GetProcAddress(hinstDLL, "D3DPERF_GetStatus");
@@ -31,8 +31,9 @@ extern "C" __declspec(dllexport) DWORD WINAPI D3DPERF_GetStatus(void)
 
 static DWORD WINAPI Begin(LPVOID lpParam)
 {
-	return ModCore::Start();
+	return ModCore::Start(static_cast<HINSTANCE>(lpParam));
 };
+#include <filesystem>
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -40,7 +41,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	{
 	case DLL_PROCESS_ATTACH:
 		DisableThreadLibraryCalls(hinstDLL);
-		CreateThread(NULL, NULL, Begin, NULL, NULL, NULL);
+		CreateThread(NULL, NULL, Begin, hinstDLL, NULL, NULL);
 		break;
 
 	case DLL_PROCESS_DETACH:

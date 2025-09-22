@@ -1,5 +1,7 @@
 #pragma once
 
-float CalcWeaponDamage(DWORD, std::uint32_t, float, std::uint64_t, std::uint64_t, std::uint64_t, float, BYTE);
+void GetMagicParams(UINT_PTR* buff, std::uint32_t spellId);
+extern decltype(&GetMagicParams) GetMagicParams_org;
 
-extern decltype(&CalcWeaponDamage) CalcWeaponDamage_org;
+void GetWeaponParams(UINT_PTR* buff, std::uint32_t wepId);
+extern decltype(&GetWeaponParams) GetWeaponParams_org;
