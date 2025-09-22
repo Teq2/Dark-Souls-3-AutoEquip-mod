@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <winternl.h>
 
-
 #define DS3_1_15_2
 
 class Addresses
@@ -49,29 +48,14 @@ public:
 		return findEquippedSlotAddr + baseDelta;
 	}
 
-	static UINT_PTR GetCalcWeaponDamage()
+	static UINT_PTR GetGetWeaponParams()
 	{
-		return 0x1406420c0 + baseDelta;
+		return getWeaponParamsAddr + baseDelta;
 	}
 
-	static UINT_PTR GetGetStrRequirements()
+	static UINT_PTR GetGetMagicParams()
 	{
-		return getStrRequirementsAddr + baseDelta;
-	}
-
-	static UINT_PTR GetGetAgiRequirements()
-	{
-		return getAgiRequirementsAddr + baseDelta;
-	}
-
-	static UINT_PTR GetGetIntRequirements()
-	{
-		return getIntRequirementsAddr + baseDelta;
-	}
-
-	static UINT_PTR GetGetFthRequirements()
-	{
-		return getFthRequirementsAddr + baseDelta;
+		return getMagicParamsAddr + baseDelta;
 	}
 
 private:
@@ -88,11 +72,8 @@ private:
 	// hooks
 	static const UINT_PTR itemPickupAddr = 0x1407c4080;
  	static const UINT_PTR itemBuyAddr = 0x140b034f0;
-
-	static const UINT_PTR getStrRequirementsAddr = 0x140c11961;
-	static const UINT_PTR getAgiRequirementsAddr = 0x140c11a90;
-	static const UINT_PTR getIntRequirementsAddr = 0x140c118c0;
-	static const UINT_PTR getFthRequirementsAddr = 0x140c11c70;
+ 	static const UINT_PTR getWeaponParamsAddr = 0x140e41670;
+ 	static const UINT_PTR getMagicParamsAddr = 0x140e32960;
 
 	// callables
 	static const UINT_PTR equipItemAddr = 0x140b064e0;

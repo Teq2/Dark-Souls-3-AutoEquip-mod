@@ -12,14 +12,13 @@
 #endif
 
 enum class UpgradeAdjustment { None, Higher, Max };
-enum class WeaponRequirements { Full, Halved, NoReq } ;
+enum class StatRequirements { Full, Halved, NoReq } ;
 
 class ModCore {
 public:
-	static DWORD Start();
-	static bool Initialize();
+	static DWORD Start(HINSTANCE dllInstance);
 
-	static void Panic(char* message, char* sort, bool isFatalError);
+	static void Panic(const char* message, const char* sort, bool isFatalError);
 	static void DebugInit();
 	static void DebugPrint(const char* message, ...);
 };
@@ -35,10 +34,12 @@ public:
 	static inline bool AutoEquipRings;
 	static inline bool LeftHandedCatalysts;
 	static inline bool LeftHandedRanged;
-	static inline WeaponRequirements LessWeaponRequirements;
+	static inline StatRequirements WeaponRequirements;
+	static inline StatRequirements MagicRequirements;
 
 	static inline bool RandomWeaponUpgrades;
 	static inline int RandomInfusionChance;
 	static inline bool ReinforceShopWeapons;
 	static inline UpgradeAdjustment AdjustUpgrades;
+
 };

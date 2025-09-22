@@ -4,7 +4,7 @@ struct EquipParamWeapon;
 struct EquipParamGoods;
 struct EquipParamAccessory;
 
-enum ParamTableType { EquipParamWeaponTable, EquipParamProtectorTable, EquipParamAccessoryTable, EquipParamGoodsTable};
+enum ParamTableType { EquipParamWeaponTable, EquipParamProtectorTable, EquipParamAccessoryTable, EquipParamGoodsTable, Magic = 14};
 
 class ParamHelpers {
     typedef void(*ParamFunc)(void*, int);
@@ -691,6 +691,37 @@ struct EquipParamWeapon {
     unsigned char	Unk65;
     int	Unk66;
     short	SpEff9600;
+};
+
+// partial
+struct MagicParams
+{
+    int	yesNoDialogMessageId;
+    int	LimitCancelSpEffectId;
+    short	sortId;
+    short	refId;
+    short	refIdFpCost1;
+    short	refIdSpCost1;
+    short	iconId;
+    short	behaviorId;
+    short	mtrlItemId;
+    short	replaceMagicId;
+    short	maxQuantity;
+    unsigned char	heroPoint;
+    unsigned char	overDexterity;
+    unsigned char	sfxVariationId;
+    unsigned char	slotLength;
+    unsigned char	requirementIntellect;
+    unsigned char	requirementFaith;
+    unsigned char	analogDexterityMin;
+    unsigned char	analogDexterityMax;
+    unsigned char	ezStateBehaviorType;
+    unsigned char	refCategory1;
+    unsigned char	spEffectCategory;
+    unsigned char	refType;
+    unsigned char	menuType;
+    unsigned char	refCategory4;
+    short	hasSpEffectType;
 };
 
 #pragma endregion

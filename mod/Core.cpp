@@ -3,32 +3,24 @@
 #include "Addresses.h"
 #include "ItemAcqHooks.h"
 #include "ItemRequirements.h"
-#include <iostream>
+#include <filesystem>
 
-DWORD NoWeaponRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr);
-DWORD StrRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr);
-DWORD AgiRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr);
-DWORD IntRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr);
-DWORD FthRequirements(UINT_PTR thisPtr, UINT_PTR itemPtr);
-
-DWORD ModCore::Start()
+DWORD ModCore::Start(HINSTANCE dllInstance)
 {
 	DebugInit();
-	if (!Initialize()){
-		Panic("Failed to Initialize", "Core\\Core.cpp", 1);
-		int3
-	};
-	return 0;
-};
 
+	// Full dll path is needed for Modengine
+	char dllPath[MAX_PATH + 1];
+	GetModuleFileNameA(dllInstance, dllPath, MAX_PATH);
 
-
-bool ModCore::Initialize()
-{
-	Addresses::Rebase();
-
-	if (!Settings::LoadSettings("./AutoEquipSettings.ini"))
-		Panic("Failed to load 'AutoEquipSettings.ini'", "Core\\Core.cpp", true);
+	if (!Settings::LoadSettings(std::filesystem::path(dllPath).parent_path().append("AutoEquipSettings.ini").string()))
+	{
+		// try again in .exe folder
+		if (!Settings::LoadSettings("AutoEquipSettings.ini"))
+		{
+			Panic("Failed to load 'AutoEquipSettings.ini'\r\nFallback values were used.", "Core\\Core.cpp", false);
+		}
+	}
 
 #ifdef DEBUG
 	DebugPrint("[AutoEquip] - AutoEquipWeapons = %i", Settings::AutoEquipWeapons);
@@ -40,31 +32,43 @@ bool ModCore::Initialize()
 	DebugPrint("[Randomizer] - RandomInfusionChance = %i", Settings::RandomInfusionChance);
 	DebugPrint("[Randomizer] - ReinforceShopWeapons = %i", Settings::ReinforceShopWeapons);
 	DebugPrint("[Randomizer] - AdjustUpgrades = %i", Settings::AdjustUpgrades);
-	DebugPrint("[Misc] - LessWeaponRequirements = %i", Settings::LessWeaponRequirements);
+	DebugPrint("[Requirements] - ReduceWeaponRequirements = %i", Settings::WeaponRequirements);
+	DebugPrint("[Requirements] - ReduceMagicRequirements = %i", Settings::MagicRequirements);
 #endif
 
-	if (MH_Initialize() != MH_OK) return false;
+	Addresses::Rebase();
+	bool hooked = false;
+	if (MH_Initialize() == MH_OK)
+	{
+		hooked = Hooks::SetHook(Addresses::GetItemPickup(), &ItemPickupHook, &ItemPickupHookOrig);
+		hooked &= Hooks::SetHook(Addresses::GetItemBuy(), &ItemBuyHook, &ItemBuyHookOrig);
 
-	auto ret = Hooks::SetHook(Addresses::GetItemPickup(), &ItemPickupHook, &ItemPickupHookOrig);
-	ret &= Hooks::SetHook(Addresses::GetItemBuy(), &ItemBuyHook, &ItemBuyHookOrig);
-	
-	if (Settings::LessWeaponRequirements != WeaponRequirements::Full) {
-		ret &= Hooks::SetHook(Addresses::GetGetStrRequirements(), &StrRequirements);
-		ret &= Hooks::SetHook(Addresses::GetGetAgiRequirements(), &AgiRequirements);
-		ret &= Hooks::SetHook(Addresses::GetGetIntRequirements(), &IntRequirements);
-		ret &= Hooks::SetHook(Addresses::GetGetFthRequirements(), &FthRequirements);
-		ret &= Hooks::SetHook(Addresses::GetCalcWeaponDamage(), &CalcWeaponDamage, &CalcWeaponDamage_org);
+		if (Settings::WeaponRequirements != StatRequirements::Full)
+		{
+			hooked &= Hooks::SetHook(Addresses::GetGetWeaponParams(), &GetWeaponParams, &GetWeaponParams_org);
+		}
+
+		if (Settings::MagicRequirements != StatRequirements::Full)
+		{
+			hooked &= Hooks::SetHook(Addresses::GetGetMagicParams(), &GetMagicParams, &GetMagicParams_org);
+		}
 	}
 
-	return ret;
+	if (!hooked)
+	{
+		Panic("Failed to initialize hooks", "Core\\Core.cpp", true);
+		int3
+	};
+	return 0;
 };
 
-void ModCore::Panic(char* message, char* sort, bool isFatalError)
+void ModCore::Panic(const char* message, const char* sort, bool isFatalError)
 {
 	char outmsg[MAX_PATH];
 	sprintf_s(outmsg, "[%s] %s", sort, message);
 
-	if (IsDebuggerPresent()) {
+	if (IsDebuggerPresent())
+	{
 		OutputDebugStringA(outmsg);
 	};
 
@@ -112,9 +116,6 @@ bool Settings::IsAutoEquipEnabled()
 bool Settings::LoadSettings(const std::string& filename)
 {
 	INIReader reader(filename);
-	if (reader.ParseError() == -1) {
-		return false;
-	};
 
 	AutoEquipWeapons = reader.GetBoolean("AutoEquip", "AutoEquipWeapons", true);
 	AutoEquipArmor = reader.GetBoolean("AutoEquip", "AutoEquipArmor", true);
@@ -122,8 +123,8 @@ bool Settings::LoadSettings(const std::string& filename)
 	LeftHandedCatalysts = reader.GetBoolean("AutoEquip", "LeftHandedCatalysts", true);
 	LeftHandedRanged = reader.GetBoolean("AutoEquip", "LeftHandedRanged", true);
 
-	RandomWeaponUpgrades = reader.GetBoolean("Randomizer", "RandomizeWeaponUpgrade", false);
-	RandomInfusionChance = reader.GetInteger("Randomizer", "RandomInfusionChance", 0);
+	RandomWeaponUpgrades = reader.GetBoolean("Randomizer", "RandomizeWeaponUpgrade", true);
+	RandomInfusionChance = reader.GetInteger("Randomizer", "RandomInfusionChance", 50);
 
 	RandomInfusionChance = RandomInfusionChance < 0 ? 0 : RandomInfusionChance;
 	RandomInfusionChance = RandomInfusionChance > 100 ? 100 : RandomInfusionChance;
@@ -131,6 +132,8 @@ bool Settings::LoadSettings(const std::string& filename)
 	ReinforceShopWeapons = reader.GetBoolean("Randomizer", "ReinforceShopWeapons", false);
 	AdjustUpgrades = static_cast<UpgradeAdjustment>(reader.GetInteger("Randomizer", "AdjustUpgrades", 0));
 
-	LessWeaponRequirements = static_cast<WeaponRequirements>(reader.GetInteger("Misc", "LessWeaponRequirements", 0));
-	return true;
+	WeaponRequirements = static_cast<StatRequirements>(reader.GetInteger("Requirements", "ReduceWeaponRequirements", 0));
+	MagicRequirements = static_cast<StatRequirements>(reader.GetInteger("Requirements", "ReduceMagicRequirements", 0));
+
+	return reader.ParseError() != -1;
 }
